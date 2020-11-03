@@ -31,5 +31,5 @@ RUN echo "${KUBECTL_SHA256}  kubectl" | sha256sum -c - || exit 10
 ENV PATH="/:${PATH}"
 
 COPY entrypoint.sh /
-USER backup
+USER root
 ENTRYPOINT ["/entrypoint.sh"]
