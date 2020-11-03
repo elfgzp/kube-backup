@@ -4,12 +4,12 @@ if [ -z "$NAMESPACES" ]; then
     NAMESPACES=$(kubectl get ns -o jsonpath={.items[*].metadata.name})
 fi
 
-RESOURCETYPES="${RESOURCETYPES:-"ingress deployment configmap svc rc ds networkpolicy statefulset cronjob pvc"}"
+RESOURCETYPES="${RESOURCETYPES:-"$(kubectl api-resources| awk 'NR == 1 {next} {print $1}' | xargs)"}"
 GLOBALRESOURCES="${GLOBALRESOURCES:-"namespace storageclass clusterrole clusterrolebinding customresourcedefinition"}"
 
 # Initialize git repo
 [ -z "$DRY_RUN" ] && [ -z "$GIT_REPO" ] && echo "Need to define GIT_REPO environment variable" && exit 1
-GIT_REPO_PATH="${GIT_REPO_PATH:-"/backup/git"}"
+GIT_REPO_PATH="${GIT_REPO_PATH:-"/root/git"}"
 GIT_PREFIX_PATH="${GIT_PREFIX_PATH:-"."}"
 GIT_USERNAME="${GIT_USERNAME:-"kube-backup"}"
 GIT_EMAIL="${GIT_EMAIL:-"kube-backup@example.com"}"
@@ -18,7 +18,7 @@ GITCRYPT_ENABLE="${GITCRYPT_ENABLE:-"false"}"
 GITCRYPT_PRIVATE_KEY="${GITCRYPT_PRIVATE_KEY:-"/secrets/gpg-private.key"}"
 GITCRYPT_SYMMETRIC_KEY="${GITCRYPT_SYMMETRIC_KEY:-"/secrets/symmetric.key"}"
 
-if [[ ! -f /backup/.ssh/id_rsa ]]; then
+if [[ ! -f /root/.ssh/id_rsa ]]; then
     git config --global credential.helper '!aws codecommit credential-helper $@'
     git config --global credential.UseHttpPath true
 fi
