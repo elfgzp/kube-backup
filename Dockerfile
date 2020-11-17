@@ -32,4 +32,4 @@ ENV PATH="/:${PATH}"
 
 COPY entrypoint.sh /
 USER root
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/bin/bash", "-c", "/entrypoint.sh"]
